@@ -202,8 +202,23 @@ def train_forest(features, labels, num_trees=10, max_depth=10, min_samples_split
         
     return forest
 
-# Step 13 - combine_predictions (not yet solved)
-# TODO: implement
+# Step 13 - combine_predictions
+import numpy as np
+
+def combine_predictions(tree_predictions):
+    """Aggregate the per-tree predictions of an ensemble into one prediction per example."""
+    
+    # Convert to a 2D array and transpose. 
+    # Shape goes from (num_trees, num_examples) -> (num_examples, num_trees)
+    preds = np.array(tree_predictions).T
+    
+    # Helper to calculate the mode (majority vote) for a single example
+    def majority_vote(example_preds):
+        values, counts = np.unique(example_preds, return_counts=True)
+        return values[np.argmax(counts)]
+        
+    # Apply the majority vote across all examples
+    return np.array([majority_vote(row) for row in preds])
 
 # Step 14 - predict_forest (not yet solved)
 # TODO: implement

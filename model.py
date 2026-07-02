@@ -157,8 +157,50 @@ def feature_subset(num_features, num_to_pick, rng):
     # TODO: return num_to_pick distinct random feature indices from range(num_features) using rng.
     return rng.choice(num_features, size=num_to_pick, replace=False)
 
-# Step 12 - train_forest (not yet solved)
-# TODO: implement
+# Step 12 - train_forest
+import numpy as np
+
+def train_forest(features, labels, num_trees=10, max_depth=10, min_samples_split=2, num_features_per_split=None, random_state=0):
+    """
+    Grow num_trees decision trees on bootstrap samples with random feature subsets.
+    """
+    # 1. Build a single generator ONCE outside the loop to ensure reproducible variance
+    rng = np.random.default_rng(random_state)
+    
+    # 2. Compute the per-split feature count
+    num_features = features.shape[1]
+    if num_features_per_split is None:
+        # Default to max(1, round(sqrt(d)))
+        num_to_pick = max(1, int(round(np.sqrt(num_features))))
+    else:
+        num_to_pick = num_features_per_split
+        
+    forest = []
+    
+    # 3. Loop num_trees times
+    for _ in range(num_trees):
+        # Draw a bootstrap sample of rows (sampled with replacement)
+        X_boot, y_boot = bootstrap_sample(features, labels, rng)
+        
+        # Pick a random subset of columns (no replacement)
+        f_subset = feature_subset(num_features, num_to_pick, rng)
+        
+        # Fit the tree
+        tree = build_tree(
+            X_boot, 
+            y_boot, 
+            max_depth=max_depth, 
+            min_samples_split=min_samples_split, 
+            feature_subset=f_subset
+        )
+        
+        # Append the tree and its designated features to the ensemble
+        forest.append({
+            "tree": tree, 
+            "feature_indices": f_subset
+        })
+        
+    return forest
 
 # Step 13 - combine_predictions (not yet solved)
 # TODO: implement

@@ -220,8 +220,24 @@ def combine_predictions(tree_predictions):
     # Apply the majority vote across all examples
     return np.array([majority_vote(row) for row in preds])
 
-# Step 14 - predict_forest (not yet solved)
-# TODO: implement
+# Step 14 - predict_forest
+import numpy as np
+
+def predict_forest(forest, features):
+    """Predict classes for a dataset using the whole trained forest."""
+    tree_predictions = []
+    
+    # 1. Collect predictions from every tree
+    for t in forest:
+        # Extract the actual tree dictionary from the forest ensemble list
+        tree_structure = t["tree"]
+        
+        # Get this specific tree's predictions for all examples
+        p = predict_tree(tree_structure, features)
+        tree_predictions.append(p)
+        
+    # 2. Return the combined majority-vote predictions
+    return combine_predictions(tree_predictions)
 
 # Step 15 - accuracy (not yet solved)
 # TODO: implement

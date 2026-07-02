@@ -60,8 +60,14 @@ def best_split(features, labels, feature_indices):
                 out["threshold"] = t 
     return out
 
-# Step 5 - should_stop (not yet solved)
-# TODO: implement
+# Step 5 - should_stop
+def should_stop(labels, depth, max_depth, min_samples_split):
+    """Return True if this node should become a leaf instead of splitting further."""
+    # Fixed the syntax error by removing the extra "if" keywords
+    if depth >= max_depth or len(labels) < min_samples_split or len(np.unique(labels)) == 1:
+        return True
+    else:
+        return False
 
 # Step 6 - leaf_prediction (not yet solved)
 # TODO: implement
